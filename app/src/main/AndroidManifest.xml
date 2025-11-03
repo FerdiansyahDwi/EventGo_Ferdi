@@ -13,6 +13,24 @@
         android:theme="@style/Theme.EventGo"
         tools:targetApi="31">
         <activity
+            android:name=".OrderListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrderTicketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventListActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
