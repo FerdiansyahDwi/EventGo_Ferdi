@@ -2,10 +2,11 @@ package com.example.eventgo.entity
 
 data class Event(
     var id: String? = null,
-    var title: String? = null,
-    var date: String? = null,
-    var location: String? = null,
-    var price: Double? = null,
-    var description: String? = null,
-    var category: String? = null
+    var title: String = "",
+    var date: String = "",
+    var location: String = "",
+    var price: Double = 0.0,
+    var description: String = "",
+    var category: String = "",
+    var imageUrl: String = ""
 )

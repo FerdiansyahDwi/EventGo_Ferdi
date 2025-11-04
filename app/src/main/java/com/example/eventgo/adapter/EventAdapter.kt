@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eventgo.R
@@ -14,6 +15,8 @@ import com.example.eventgo.EditEventActivity
 import com.example.eventgo.EventDetailActivity
 import com.example.eventgo.usecase.EventUseCase
 import android.widget.Toast
+import com.bumptech.glide.Glide
+
 
 class EventAdapter (
     private val context: Context,
@@ -23,6 +26,7 @@ class EventAdapter (
     private val eventUseCase = EventUseCase()
 
     inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val ivEvent: ImageView = itemView.findViewById(R.id.ivEvent)
         val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         val tvLocation: TextView = itemView.findViewById(R.id.tvLocation)
         val tvDate: TextView = itemView.findViewById(R.id.tvDate)
@@ -48,30 +52,10 @@ class EventAdapter (
         holder.tvDate.text = "Tanggal: ${event.date}"
         holder.tvPrice.text = "Harga: Rp${event.price}"
 
-        // Tombol Detail
-        holder.btnDetail.setOnClickListener {
-            val intent = Intent(context, EventDetailActivity::class.java)
-            intent.putExtra("EVENT_ID", event.id)
-            context.startActivity(intent)
-        }
-
-        // Tombol Edit
-        holder.btnEdit.setOnClickListener {
-            val intent = Intent(context, EditEventActivity::class.java)
-            intent.putExtra("EVENT_ID", event.id)
-            context.startActivity(intent)
-        }
-
-        // Tombol Delete
-        holder.btnDelete.setOnClickListener {
-            event.id?.let {
-                eventUseCase.deleteEvent(it, {
-                    Toast.makeText(context, "Event berhasil dihapus", Toast.LENGTH_SHORT).show()
-                }, {
-                    Toast.makeText(context, "Gagal menghapus: ${it.message}", Toast.LENGTH_SHORT).show()
-                })
-            }
-        }
+        Glide.with(context)
+            .load(event.imageUrl)
+            .placeholder(R.drawable.ic_image_placeholder)
+            .into(holder.ivEvent)
     }
 
     fun updateData(newList: List<Event>) {
