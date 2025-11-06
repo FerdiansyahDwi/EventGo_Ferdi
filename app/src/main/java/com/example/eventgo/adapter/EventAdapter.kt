@@ -81,6 +81,9 @@ class EventAdapter(
             event.id?.let { eventId ->
                 eventUseCase.deleteEvent(eventId, {
                     Toast.makeText(context, "Event berhasil dihapus", Toast.LENGTH_SHORT).show()
+                    val newList = eventList.toMutableList()
+                    newList.removeAt(position)
+                    updateData(newList)
                 }, {
                     Toast.makeText(context, "Gagal menghapus event: ${it.message}", Toast.LENGTH_SHORT).show()
                 })
