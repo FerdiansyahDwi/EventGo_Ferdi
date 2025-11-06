@@ -6,13 +6,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.eventgo.databinding.ActivityCreateEventBinding
 import com.example.eventgo.entity.Event
 import com.example.eventgo.usecase.EventUseCase
-import com.google.firebase.storage.FirebaseStorage
-import java.util.UUID
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 
 class CreateEventActivity : AppCompatActivity() {
 
@@ -23,16 +22,31 @@ class CreateEventActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityCreateEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // ✅ Inisialisasi manual Cloudinary
+        val config = mapOf(
+            "cloud_name" to "dqs99dmch", // ganti dengan cloud name kamu
+            "api_key" to "871657475853684",
+            "api_secret" to "nr_SAdat_KM83Xpcj13dlM7OFU4",
+            "secure" to true
+        )
+
+        try {
+            MediaManager.init(this, config)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        // Pilih gambar
         binding.btnSelectImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, PICK_IMAGE)
         }
 
+        // Tombol simpan
         binding.btnSave.setOnClickListener {
             if (imageUri == null) {
                 Toast.makeText(this, "Pilih gambar terlebih dahulu", Toast.LENGTH_SHORT).show()
@@ -42,17 +56,38 @@ class CreateEventActivity : AppCompatActivity() {
         }
     }
 
+    // ✅ Upload pakai unsigned preset
     private fun uploadImageAndSaveEvent() {
-        val storageRef = FirebaseStorage.getInstance().getReference("event_images/${UUID.randomUUID()}")
-        val uploadTask = storageRef.putFile(imageUri!!)
+        MediaManager.get().upload(imageUri)
+            .option("upload_preset", "unsigned_eventgo") // ganti sesuai preset kamu
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String?) {
+                    Toast.makeText(this@CreateEventActivity, "Mengupload gambar...", Toast.LENGTH_SHORT).show()
+                }
 
-        uploadTask.addOnSuccessListener {
-            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                saveEvent(uri.toString())
-            }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Upload gagal: ${it.message}", Toast.LENGTH_SHORT).show()
-        }
+                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+
+                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                    val imageUrl = resultData?.get("secure_url").toString()
+                    Toast.makeText(this@CreateEventActivity, "Upload berhasil! URL: $imageUrl", Toast.LENGTH_SHORT).show()
+                    android.util.Log.d("Cloudinary", "Image URL: $imageUrl")
+
+                    saveEvent(imageUrl)
+                }
+
+                override fun onError(requestId: String?, error: ErrorInfo?) {
+                    android.util.Log.e("Cloudinary", "Upload error: ${error?.description}")
+                    Toast.makeText(
+                        this@CreateEventActivity,
+                        "Upload gagal: ${error?.description}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+
+                override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
+            })
+            .dispatch()
     }
 
     private fun saveEvent(imageUrl: String) {
@@ -67,10 +102,13 @@ class CreateEventActivity : AppCompatActivity() {
 
         eventUseCase.addEvent(event, {
             Toast.makeText(this, "Event berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+            android.util.Log.d("EventGo", "Event berhasil disimpan ke backend")
             finish()
         }, {
             Toast.makeText(this, "Gagal menambah event: ${it.message}", Toast.LENGTH_SHORT).show()
+            android.util.Log.e("EventGo", "Gagal simpan event: ${it.message}")
         })
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

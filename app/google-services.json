@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "840274254049",
+    "firebase_url": "https://eventgo-b919b-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "eventgo-b919b",
     "storage_bucket": "eventgo-b919b.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.eventgo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "840274254049-onf6h68l4rn18p5r0c43ljtv9bosqo5f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eventgo",
+            "certificate_hash": "25d1930461270fea761c0e47899bfb502659b877"
+          }
+        },
+        {
+          "client_id": "840274254049-2do4d1isbdg7sqn1lkf4kqtl57b34iht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDkk6t9hmeFjYVbEGZZChRS_iU0z-up4ZQ"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840274254049-2do4d1isbdg7sqn1lkf4kqtl57b34iht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

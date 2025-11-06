@@ -8,17 +8,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.eventgo.R
-import com.example.eventgo.entity.Event
+import com.bumptech.glide.Glide
 import com.example.eventgo.EditEventActivity
 import com.example.eventgo.EventDetailActivity
+import com.example.eventgo.R
+import com.example.eventgo.entity.Event
 import com.example.eventgo.usecase.EventUseCase
-import android.widget.Toast
-import com.bumptech.glide.Glide
 
-
-class EventAdapter (
+class EventAdapter(
     private val context: Context,
     private var eventList: List<Event>
 ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
@@ -56,6 +55,37 @@ class EventAdapter (
             .load(event.imageUrl)
             .placeholder(R.drawable.ic_image_placeholder)
             .into(holder.ivEvent)
+
+        // Tombol DETAIL
+        holder.btnDetail.setOnClickListener {
+            val intent = Intent(context, EventDetailActivity::class.java)
+            intent.putExtra("event_id", event.id)
+            context.startActivity(intent)
+        }
+
+        // Tombol EDIT
+        holder.btnEdit.setOnClickListener {
+            val intent = Intent(context, EditEventActivity::class.java)
+            intent.putExtra("event_id", event.id)
+            intent.putExtra("title", event.title)
+            intent.putExtra("description", event.description)
+            intent.putExtra("date", event.date)
+            intent.putExtra("location", event.location)
+            intent.putExtra("price", event.price)
+            intent.putExtra("imageUrl", event.imageUrl)
+            context.startActivity(intent)
+        }
+
+        // Tombol DELETE
+        holder.btnDelete.setOnClickListener {
+            event.id?.let { eventId ->
+                eventUseCase.deleteEvent(eventId, {
+                    Toast.makeText(context, "Event berhasil dihapus", Toast.LENGTH_SHORT).show()
+                }, {
+                    Toast.makeText(context, "Gagal menghapus event: ${it.message}", Toast.LENGTH_SHORT).show()
+                })
+            }
+        }
     }
 
     fun updateData(newList: List<Event>) {
