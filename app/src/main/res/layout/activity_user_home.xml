@@ -44,7 +44,16 @@
             android:text="Lihat Daftar Event"
             style="@style/Widget.EventGo.Button" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
+            android:id="@+id/btnMyTickets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Tiket Saya"
+            style="@style/Widget.EventGo.Button"
+            android:backgroundTint="@color/soft_blue_accent"/>
+
+        <Button
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

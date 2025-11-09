@@ -20,6 +20,12 @@ class UserHomeActivity : AppCompatActivity() {
 
         binding.btnViewEvents.setOnClickListener {
             startActivity(Intent(this, EventListActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
+        binding.btnMyTickets.setOnClickListener {
+            startActivity(Intent(this, MyTicketsActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         binding.btnLogout.setOnClickListener {
@@ -29,7 +35,9 @@ class UserHomeActivity : AppCompatActivity() {
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 }

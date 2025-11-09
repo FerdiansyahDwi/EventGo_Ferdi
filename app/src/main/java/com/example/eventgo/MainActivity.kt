@@ -161,6 +161,8 @@ class MainActivity : AppCompatActivity() {
             Intent(this, UserHomeActivity::class.java)
         }
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

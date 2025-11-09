@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_background"
+    android:padding="24dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp">
+
+        <ImageView
+            android:id="@+id/ivEventImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/divider_color"
+            android:contentDescription="Gambar Event"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvEventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/soft_blue_accent"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        tools:text="Event Good Day" />
+
+    <TextView
+        android:id="@+id/tvEventDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/text_dark"
+        tools:text="01-11-2025" />
+
+    <TextView
+        android:id="@+id/tvBuyerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:drawableStart="@drawable/ic_buyer"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/text_dark"
+        tools:text="Nama Pemesan: Ferdi" />
+
+    <TextView
+        android:id="@+id/tvQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:drawableStart="@drawable/ic_ticket"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/text_dark"
+        tools:text="Jumlah: 2 Tiket" />
+
+    <TextView
+        android:id="@+id/tvTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:drawableStart="@drawable/ic_price"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/text_dark"
+        android:textStyle="bold"
+        tools:text="Total: Rp 400.000" />
+
+    <ImageView
+        android:id="@+id/ivQrCodeLarge"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        tools:background="@color/divider_color" />
+
+    <Button
+        android:id="@+id/btnClose"
+        style="@style/Widget.EventGo.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Tutup" />
+
+</LinearLayout>

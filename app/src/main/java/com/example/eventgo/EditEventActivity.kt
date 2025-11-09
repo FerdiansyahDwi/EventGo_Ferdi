@@ -155,8 +155,6 @@ class EditEventActivity : AppCompatActivity() {
     // Fungsi ini adalah yang "merah" (hilang) sebelumnya
     private fun searchLocationAndUpdateMarker(address: String) {
         if (address.isNotEmpty()) {
-            // Panggil fungsi geocoding, set 'isInitialLoad' ke true
-            // agar tidak menampilkan Toast "Alamat tidak ditemukan" jika gagal saat load
             fetchCoordinatesFromAddress(address, true)
         }
     }
@@ -230,6 +228,7 @@ class EditEventActivity : AppCompatActivity() {
         eventUseCase.updateEvent(event, {
             Toast.makeText(this, "Event berhasil diperbarui", Toast.LENGTH_SHORT).show()
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }, {
             Toast.makeText(this, "Gagal memperbarui event: ${it.message}", Toast.LENGTH_SHORT).show()
         })
@@ -287,14 +286,14 @@ class EditEventActivity : AppCompatActivity() {
                         moveMarker(point)
                         mapView.controller.setCenter(point)
                     }
-                } else if (!isInitialLoad) { // Jangan tampilkan toast jika ini adalah saat load data
+                } else if (!isInitialLoad) {
                     runOnUiThread {
                         Toast.makeText(this, "Alamat tidak ditemukan", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                if (!isInitialLoad) { // Jangan tampilkan toast jika ini adalah saat load data
+                if (!isInitialLoad) {
                     runOnUiThread {
                         Toast.makeText(this, "Gagal mencari koordinat", Toast.LENGTH_SHORT).show()
                     }
@@ -309,7 +308,7 @@ class EditEventActivity : AppCompatActivity() {
             if (!hasFocus) {
                 val locationText = editText.text.toString()
                 if (locationText.isNotEmpty()) {
-                    fetchCoordinatesFromAddress(locationText) // Panggil versi Nominatim
+                    fetchCoordinatesFromAddress(locationText)
                 }
             }
         }
@@ -320,7 +319,7 @@ class EditEventActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 100 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
-            binding.ivPreview.setImageURI(imageUri) // Tampilkan gambar baru di preview
+            binding.ivPreview.setImageURI(imageUri)
         }
     }
 }

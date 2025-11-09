@@ -1,11 +1,13 @@
 package com.example.eventgo
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.eventgo.databinding.ActivityEventDetailBinding
+import com.example.eventgo.entity.Event
 import com.example.eventgo.usecase.EventUseCase // ✅ Import EventUseCase
 import java.util.Locale // ✅ Import Locale untuk format harga
 
@@ -13,6 +15,7 @@ class EventDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEventDetailBinding
     private var eventId: String? = null
+    private var currentEvent: Event? = null
     private val eventUseCase = EventUseCase()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +36,20 @@ class EventDetailActivity : AppCompatActivity() {
 
         // Tombol "Order"
         binding.btnOrder.setOnClickListener {
-            Toast.makeText(this, "Fitur ini sedang dalam pengembangan!", Toast.LENGTH_SHORT).show()
+            currentEvent?.let { event ->
+                val intent = Intent(this, OrderTicketActivity::class.java)
+
+                intent.putExtra("EVENT_ID", event.id)
+                intent.putExtra("EVENT_NAME", event.title)
+                intent.putExtra("EVENT_DATE", event.date)
+                intent.putExtra("EVENT_LOCATION", event.location)
+                intent.putExtra("EVENT_PRICE", event.price)
+                intent.putExtra("EVENT_IMAGE_URL", event.imageUrl)
+
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
+            } ?: Toast.makeText(this, "Data event belum selesai dimuat", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -50,6 +66,8 @@ class EventDetailActivity : AppCompatActivity() {
                     val formattedPrice = String.format(Locale("in", "ID"), "%,d", priceAsLong)
                     binding.tvPrice.text = "Harga: Rp${formattedPrice}"
 
+                    this.currentEvent = it
+
                     // Muat gambar
                     Glide.with(this)
                         .load(it.imageUrl)
@@ -62,6 +80,7 @@ class EventDetailActivity : AppCompatActivity() {
         } ?: run {
             Toast.makeText(this, "ID Event tidak ditemukan!", Toast.LENGTH_SHORT).show()
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 }

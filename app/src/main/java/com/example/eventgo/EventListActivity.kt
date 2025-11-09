@@ -2,6 +2,7 @@ package com.example.eventgo
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,9 @@ class EventListActivity : AppCompatActivity() {
         binding.rvEvents.layoutManager = LinearLayoutManager(this)
         binding.rvEvents.adapter = adapter
 
+        val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.recyclerview_animation_fade_in)
+        binding.rvEvents.layoutAnimation = animation
+
         // Panggil fungsi untuk load event
         loadEvents()
         // Panggil fungsi untuk setup search view
@@ -48,6 +52,7 @@ class EventListActivity : AppCompatActivity() {
                 adapter.updateData(events)
                 binding.tvEmpty.visibility = View.GONE
                 binding.rvEvents.visibility = View.VISIBLE
+                binding.rvEvents.scheduleLayoutAnimation()
             } else {
                 // Tampilkan teks jika data kosong dari database
                 binding.tvEmpty.text = "Belum ada event."

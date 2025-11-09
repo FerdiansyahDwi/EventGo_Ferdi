@@ -45,6 +45,7 @@ class CreateEventActivity : AppCompatActivity() {
         if (SessionManager.getUserRole() != "admin") {
             Toast.makeText(this, "Hanya admin yang dapat mengakses halaman ini", Toast.LENGTH_LONG).show()
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             return
         }
 
@@ -250,6 +251,7 @@ class CreateEventActivity : AppCompatActivity() {
             Toast.makeText(this, "Event berhasil ditambahkan", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, EventListActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }, {
             Toast.makeText(this, "Gagal menambah event: ${it.message}", Toast.LENGTH_SHORT).show()
         })

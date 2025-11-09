@@ -23,11 +23,13 @@ class HomeActivity : AppCompatActivity() {
         // Listener untuk Tombol Lihat Event
         binding.btnViewEvents.setOnClickListener {
             startActivity(Intent(this, EventListActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         // Listener untuk Tombol Tambah Event
         binding.btnAddEvent.setOnClickListener {
             startActivity(Intent(this, CreateEventActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         // Listener untuk Tombol Logout
@@ -41,7 +43,9 @@ class HomeActivity : AppCompatActivity() {
             // Pindah kembali ke halaman Login (MainActivity)
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish() // Tutup halaman Home
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 }
