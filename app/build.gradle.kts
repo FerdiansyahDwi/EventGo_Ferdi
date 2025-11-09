@@ -62,6 +62,7 @@ dependencies {
 
     // 🖼️ Glide untuk load gambar
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation(libs.androidx.activity)
     kapt("com.github.bumptech.glide:compiler:4.15.1")
 
     // ☁️ Cloudinary upload gambar

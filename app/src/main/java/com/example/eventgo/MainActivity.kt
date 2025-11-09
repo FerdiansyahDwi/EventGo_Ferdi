@@ -18,12 +18,18 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var credentialManager: CredentialManager
     private lateinit var auth: FirebaseAuth
+    private lateinit var dbRef: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +42,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        SessionManager.init(this)
+
         credentialManager = CredentialManager.create(this)
         auth = Firebase.auth
+
+        dbRef = FirebaseDatabase.getInstance()
 
         registerEvents()
     }
@@ -94,7 +104,9 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Login berhasil", Toast.LENGTH_LONG).show()
-                toHomePage()
+                    auth.currentUser?.let {
+                        checkUserRoleAndNavigate(it)
+                    }
                 } else {
                     Toast.makeText(this, "Login gagal", Toast.LENGTH_LONG).show()
                 }
@@ -103,14 +115,51 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (auth.currentUser != null) {
-            toHomePage()
+        auth.currentUser?.let {
+            checkUserRoleAndNavigate(it)
         }
 
     }
 
-    private fun toHomePage() {
-        val intent = Intent(this, HomeActivity::class.java)
+    private fun checkUserRoleAndNavigate(user: FirebaseUser) {
+        val userRef = dbRef.getReference("users").child(user.uid)
+
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val role = snapshot.child("role").getValue(String::class.java) ?: "user"
+                    SessionManager.saveUserRole(role)
+                    navigateToHome(role)
+
+                } else {
+                    val defaultRole = "user"
+                    val newUser = mapOf(
+                        "email" to user.email,
+                        "displayName" to user.displayName,
+                        "role" to defaultRole
+                    )
+
+                    userRef.setValue(newUser).addOnCompleteListener {
+                        SessionManager.saveUserRole(defaultRole)
+                        navigateToHome(defaultRole)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Gagal membaca database", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun navigateToHome(role: String) {
+        val intent = if (role == "admin") {
+            // Admin ke HomeActivity (yang ada tombol Tambah)
+            Intent(this, HomeActivity::class.java)
+        } else {
+            // User ke UserHomeActivity (yang TIDAK ada tombol Tambah)
+            Intent(this, UserHomeActivity::class.java)
+        }
         startActivity(intent)
         finish()
     }

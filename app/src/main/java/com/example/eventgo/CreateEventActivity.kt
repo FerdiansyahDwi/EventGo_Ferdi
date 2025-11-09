@@ -40,10 +40,18 @@ class CreateEventActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Blokir Keamanan
+        if (SessionManager.getUserRole() != "admin") {
+            Toast.makeText(this, "Hanya admin yang dapat mengakses halaman ini", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
         binding = ActivityCreateEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ Konfigurasi Cloudinary
+        // Konfigurasi Cloudinary
         val config = mapOf(
             "cloud_name" to "dqs99dmch",
             "api_key" to "871657475853684",
@@ -54,7 +62,7 @@ class CreateEventActivity : AppCompatActivity() {
             MediaManager.init(this, config)
         } catch (_: Exception) {}
 
-        // ✅ Konfigurasi OSM Map
+        // Konfigurasi OSM Map
         Configuration.getInstance().userAgentValue = packageName
         mapView = binding.mapView
         mapView.setMultiTouchControls(true)
@@ -92,7 +100,7 @@ class CreateEventActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE)
         }
 
-        // ✅ Pilih tanggal pakai DatePicker
+        // Pilih tanggal pakai DatePicker
         binding.etDate.setOnClickListener {
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
@@ -108,7 +116,7 @@ class CreateEventActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // ✅ Kalau user isi manual alamat → otomatis pindah marker
+        // Kalau user isi manual alamat → otomatis pindah marker
         binding.etLocation.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 val inputAddress = binding.etLocation.text.toString().trim()
@@ -118,7 +126,7 @@ class CreateEventActivity : AppCompatActivity() {
             }
         }
 
-        // ✅ Tombol Simpan Event
+        // Tombol Simpan Event
         binding.btnSave.setOnClickListener {
             val title = binding.etTitle.text.toString().trim()
             val description = binding.etDescription.text.toString().trim()
@@ -140,14 +148,14 @@ class CreateEventActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Fungsi pindahkan marker ke lokasi baru
+    // Fungsi pindahkan marker ke lokasi baru
     private fun moveMarker(point: GeoPoint) {
         marker?.position = point
         mapView.controller.animateTo(point)
         mapView.invalidate()
     }
 
-    // ✅ Ambil alamat berdasarkan koordinat (Reverse Geocoding)
+    // Ambil alamat berdasarkan koordinat (Reverse Geocoding)
     private fun fetchAddressFromCoordinates(lat: Double, lon: Double) {
         Thread {
             try {
@@ -171,7 +179,7 @@ class CreateEventActivity : AppCompatActivity() {
         }.start()
     }
 
-    // ✅ Ambil koordinat dari input alamat (Forward Geocoding)
+    // Ambil koordinat dari input alamat (Forward Geocoding)
     private fun fetchCoordinatesFromAddress(address: String) {
         Thread {
             try {
@@ -202,7 +210,7 @@ class CreateEventActivity : AppCompatActivity() {
         }.start()
     }
 
-    // ✅ Upload Gambar Cloudinary
+    // Upload Gambar Cloudinary
     private fun uploadImageAndSaveEvent() {
         MediaManager.get().upload(imageUri)
             .option("upload_preset", "unsigned_eventgo")
@@ -226,14 +234,15 @@ class CreateEventActivity : AppCompatActivity() {
             }).dispatch()
     }
 
-    // ✅ Simpan event ke Firestore
+    // Simpan event ke Firestore
     private fun saveEvent(imageUrl: String) {
+        val priceText = binding.etPrice.text.toString().filter { it.isDigit() }
         val event = Event(
             title = binding.etTitle.text.toString(),
             description = binding.etDescription.text.toString(),
             date = binding.etDate.text.toString(),
             location = binding.etLocation.text.toString(),
-            price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0,
+            price = priceText.toDoubleOrNull() ?: 0.0,
             imageUrl = imageUrl
         )
 
@@ -246,7 +255,7 @@ class CreateEventActivity : AppCompatActivity() {
         })
     }
 
-    // ✅ Ambil hasil pilih gambar
+    // Ambil hasil pilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {

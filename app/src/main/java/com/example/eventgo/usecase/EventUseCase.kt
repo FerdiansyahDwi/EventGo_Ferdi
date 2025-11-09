@@ -47,7 +47,6 @@ class EventUseCase {
             }
         })
     }
-// ...
 
     // UPDATE
     fun updateEvent(event: Event, onSuccess: () -> Unit, onError: (Exception) -> Unit) {

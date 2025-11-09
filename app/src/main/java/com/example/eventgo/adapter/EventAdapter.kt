@@ -16,6 +16,8 @@ import com.example.eventgo.EventDetailActivity
 import com.example.eventgo.R
 import com.example.eventgo.entity.Event
 import com.example.eventgo.usecase.EventUseCase
+import com.example.eventgo.SessionManager
+import java.util.Locale
 
 class EventAdapter(
     private val context: Context,
@@ -49,7 +51,23 @@ class EventAdapter(
         holder.tvTitle.text = event.title
         holder.tvLocation.text = "Lokasi: ${event.location}"
         holder.tvDate.text = "Tanggal: ${event.date}"
-        holder.tvPrice.text = "Harga: Rp${event.price}"
+        val priceAsLong = event.price.toLong()
+        val formattedPrice = String.format(Locale("in", "ID"), "%,d", priceAsLong)
+        holder.tvPrice.text = "Harga: Rp${formattedPrice}"
+
+        val userRole = SessionManager.getUserRole()
+
+        if (userRole == "admin") {
+            // Jika Admin, tampilkan semua tombol
+            holder.btnEdit.visibility = View.VISIBLE
+            holder.btnDelete.visibility = View.VISIBLE
+            holder.btnDetail.visibility = View.VISIBLE
+        } else {
+            // Jika User, sembunyikan Edit dan Delete
+            holder.btnEdit.visibility = View.GONE
+            holder.btnDelete.visibility = View.GONE
+            holder.btnDetail.visibility = View.VISIBLE
+        }
 
         Glide.with(context)
             .load(event.imageUrl)

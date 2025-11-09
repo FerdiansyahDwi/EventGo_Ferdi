@@ -36,14 +36,13 @@ class EditEventActivity : AppCompatActivity() {
     private val eventUseCase = EventUseCase()
     private val client = OkHttpClient()
     private var eventId: String? = null
-    private var imageUrlLama: String? = null // Untuk menyimpan URL gambar yang lama
+    private var imageUrlLama: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ Konfigurasi Cloudinary (Sama seperti CreateEvent)
         val config = mapOf(
             "cloud_name" to "dqs99dmch",
             "api_key" to "871657475853684",
@@ -54,7 +53,7 @@ class EditEventActivity : AppCompatActivity() {
             MediaManager.init(this, config)
         } catch (_: Exception) {}
 
-        // ✅ Konfigurasi OSM Map
+        // Konfigurasi OSM Map
         Configuration.getInstance().userAgentValue = packageName
         mapView = binding.mapView
         mapView.setMultiTouchControls(true)
@@ -77,10 +76,10 @@ class EditEventActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ Ambil data lama dari Realtime Database
+        // Ambil data lama dari Realtime Database
         loadEventData()
 
-        // ✅ Map listener (Ganti ke MapEventsReceiver agar konsisten)
+        // Map listener (Ganti ke MapEventsReceiver agar konsisten)
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 if (p != null) {
@@ -96,14 +95,14 @@ class EditEventActivity : AppCompatActivity() {
         }
         mapView.overlays.add(MapEventsOverlay(mapEventsReceiver))
 
-        // ✅ Pilih gambar baru
+        // Pilih gambar baru
         binding.btnSelectImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, 100) // Request code 100
         }
 
-        // ✅ DatePicker
+        // DatePicker
         binding.etDate.setOnClickListener {
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
@@ -114,16 +113,16 @@ class EditEventActivity : AppCompatActivity() {
             }, year, month, day).show()
         }
 
-        // ✅ Update lokasi manual
+        // Update lokasi manual
         setLocationFieldWatcher(binding.etLocation)
 
-        // ✅ Tombol Update
+        // Tombol Update
         binding.btnUpdate.setOnClickListener {
             saveChanges()
         }
     }
 
-    // ✅ Load data dari EventUseCase (Realtime Database)
+    // Load data dari EventUseCase (Realtime Database)
     private fun loadEventData() {
         eventId?.let { id ->
             eventUseCase.getEventById(id, { event ->
@@ -136,7 +135,8 @@ class EditEventActivity : AppCompatActivity() {
                     binding.etDescription.setText(it.description)
                     binding.etDate.setText(it.date)
                     binding.etLocation.setText(it.location)
-                    binding.etPrice.setText(it.price.toString())
+                    val priceAsLong = it.price.toLong()
+                    binding.etPrice.setText(priceAsLong.toString())
 
                     // Tampilkan gambar lama
                     if (it.imageUrl.isNotEmpty()) {
@@ -152,7 +152,7 @@ class EditEventActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Fungsi ini adalah yang "merah" (hilang) sebelumnya
+    // Fungsi ini adalah yang "merah" (hilang) sebelumnya
     private fun searchLocationAndUpdateMarker(address: String) {
         if (address.isNotEmpty()) {
             // Panggil fungsi geocoding, set 'isInitialLoad' ke true
@@ -161,27 +161,28 @@ class EditEventActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Logika utama untuk menyimpan perubahan
+    // Logika utama untuk menyimpan perubahan
     private fun saveChanges() {
-        // 1. Ambil data dari views
+        // Ambil data dari views
         val title = binding.etEventName.text.toString().trim()
         val description = binding.etDescription.text.toString().trim()
         val date = binding.etDate.text.toString().trim()
         val location = binding.etLocation.text.toString().trim()
-        val price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
+        val priceText = binding.etPrice.text.toString().filter { it.isDigit() }
+        val price = priceText.toDoubleOrNull() ?: 0.0
 
-        // 2. Validasi input
+        // Validasi input
         if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty()) {
             Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // 3. Cek apakah user memilih gambar baru
+        // Cek apakah user memilih gambar baru
         if (imageUri != null) {
-            // Kasus 1: Ada gambar baru -> Upload dulu
+            // Ada gambar baru -> Upload dulu
             uploadImageAndUpdateEvent(title, description, date, location, price)
         } else {
-            // Kasus 2: Tidak ada gambar baru -> Langsung update data dengan imageUrl lama
+            // Tidak ada gambar baru -> Langsung update data dengan imageUrl lama
             val updatedEvent = Event(
                 id = eventId,
                 title = title,
@@ -195,10 +196,10 @@ class EditEventActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Fungsi untuk upload gambar baru (jika ada)
+    // Fungsi untuk upload gambar baru (jika ada)
     private fun uploadImageAndUpdateEvent(title: String, description: String, date: String, location: String, price: Double) {
         MediaManager.get().upload(imageUri)
-            .option("upload_preset", "unsigned_eventgo") // Sesuaikan dengan preset Anda
+            .option("upload_preset", "unsigned_eventgo")
             .callback(object : UploadCallback {
                 override fun onStart(requestId: String?) {
                     Toast.makeText(this@EditEventActivity, "Mengupload gambar baru...", Toast.LENGTH_SHORT).show()
@@ -213,7 +214,7 @@ class EditEventActivity : AppCompatActivity() {
                         date = date,
                         location = location,
                         price = price,
-                        imageUrl = newImageUrl // Pakai URL gambar yang BARU
+                        imageUrl = newImageUrl
                     )
                     updateEventInDatabase(updatedEvent)
                 }
@@ -224,7 +225,7 @@ class EditEventActivity : AppCompatActivity() {
             }).dispatch()
     }
 
-    // ✅ Fungsi final untuk update data ke EventUseCase
+    // Fungsi final untuk update data ke EventUseCase
     private fun updateEventInDatabase(event: Event) {
         eventUseCase.updateEvent(event, {
             Toast.makeText(this, "Event berhasil diperbarui", Toast.LENGTH_SHORT).show()
@@ -234,14 +235,14 @@ class EditEventActivity : AppCompatActivity() {
         })
     }
 
-    // ✅ Fungsi pindah marker
+    // Fungsi pindah marker
     private fun moveMarker(point: GeoPoint) {
         marker.position = point
         mapView.controller.animateTo(point)
         mapView.invalidate()
     }
 
-    // ✅ Ambil alamat dari koordinat (Reverse Geocoding - Nominatim)
+    // Ambil alamat dari koordinat (Reverse Geocoding - Nominatim)
     private fun fetchAddressFromCoords(point: GeoPoint) {
         Thread {
             try {
@@ -264,7 +265,7 @@ class EditEventActivity : AppCompatActivity() {
         }.start()
     }
 
-    // ✅ Ambil koordinat dari input alamat (Forward Geocoding - Nominatim)
+    // Ambil koordinat dari input alamat (Forward Geocoding - Nominatim)
     private fun fetchCoordinatesFromAddress(address: String, isInitialLoad: Boolean = false) {
         Thread {
             try {
@@ -302,7 +303,7 @@ class EditEventActivity : AppCompatActivity() {
         }.start()
     }
 
-    // ✅ Update listener untuk EditText lokasi
+    // Update listener untuk EditText lokasi
     private fun setLocationFieldWatcher(editText: EditText) {
         editText.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
@@ -314,7 +315,7 @@ class EditEventActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Ambil hasil pilih gambar
+    // Ambil hasil pilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 100 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
