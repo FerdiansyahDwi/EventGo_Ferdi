@@ -5,24 +5,31 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_light"
     tools:context=".HomeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F9F9F9"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="24dp"
-        tools:context="MainActivity">
+        android:padding="24dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="EventGo"
-            android:textColor="#222"
-            android:textSize="28sp"
+            android:text="Selamat Datang di"
+            android:textColor="@color/text_dark"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            android:text="EventGo!"
+            android:textColor="@color/soft_blue_accent"
+            android:textSize="42sp"
+            android:fontFamily="sans-serif-medium"
             android:textStyle="bold" />
 
         <Button
@@ -30,13 +37,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Lihat Daftar Event" />
+            android:text="Lihat Daftar Event"
+            style="@style/Widget.EventGo.Button" />
 
         <Button
             android:id="@+id/btnAddEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tambah Event Baru" />
+            android:text="Tambah Event Baru"
+            style="@style/Widget.EventGo.Button"
+            android:backgroundTint="@color/soft_blue_primary"
+            android:textColor="@color/text_dark"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

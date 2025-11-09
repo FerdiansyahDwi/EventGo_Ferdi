@@ -34,6 +34,21 @@ class EventUseCase {
         })
     }
 
+
+    fun getEventById(eventId: String, onResult: (Event?) -> Unit, onError: (Exception) -> Unit) {
+        dbRef.child(eventId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val event = snapshot.getValue(Event::class.java)
+                onResult(event)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                onError(error.toException())
+            }
+        })
+    }
+// ...
+
     // UPDATE
     fun updateEvent(event: Event, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
         event.id?.let {

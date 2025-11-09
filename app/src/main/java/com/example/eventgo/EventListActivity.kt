@@ -19,6 +19,10 @@ class EventListActivity : AppCompatActivity() {
         binding = ActivityEventListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Set toolbar
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         // Inisialisasi RecyclerView dan Adapter
         adapter = EventAdapter(this, mutableListOf())
         binding.rvEvents.layoutManager = LinearLayoutManager(this)

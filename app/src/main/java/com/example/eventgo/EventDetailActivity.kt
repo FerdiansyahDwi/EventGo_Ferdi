@@ -17,7 +17,7 @@ class EventDetailActivity : AppCompatActivity() {
         binding = ActivityEventDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        eventId = intent.getStringExtra("event_id")
+        eventId = intent.getStringExtra("eventId")
         loadEventDetail()
 
         // Tombol "Order" — bisa diubah nanti kalau ada fitur checkout

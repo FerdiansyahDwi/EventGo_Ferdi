@@ -239,7 +239,8 @@ class CreateEventActivity : AppCompatActivity() {
 
         eventUseCase.addEvent(event, {
             Toast.makeText(this, "Event berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-            finish()
+            val intent = Intent(this, EventListActivity::class.java)
+            startActivity(intent)
         }, {
             Toast.makeText(this, "Gagal menambah event: ${it.message}", Toast.LENGTH_SHORT).show()
         })
