@@ -19,7 +19,7 @@
         <item name="android:paddingBottom">12dp</item>
         <item name="android:background">@drawable/rounded_edittext_background</item>
         <item name="android:textColor">@color/text_dark</item>
-        <item name="android:textColorHint">@color/divider_color</item>
+        <item name="android:textColorHint">@color/soft_blue_dark</item>
     </style>
 
     <style name="Widget.EventGo.Button" parent="Widget.MaterialComponents.Button">
@@ -46,5 +46,10 @@
     <style name="Widget.EventGo.Button.Small.Red" parent="Widget.EventGo.Button.Small">
         <item name="android:backgroundTint">@color/error_red</item>
         <item name="android:textColor">@color/text_light</item>
+    </style>
+
+    <style name="Theme.EventGo.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

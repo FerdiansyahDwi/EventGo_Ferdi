@@ -112,7 +112,7 @@
             android:id="@+id/nameFieldsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_dark"
+            android:inputType="textPersonName"
             android:orientation="vertical"
             android:animateLayoutChanges="true"
             android:layout_marginBottom="24dp"

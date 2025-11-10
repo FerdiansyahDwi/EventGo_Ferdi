@@ -22,6 +22,16 @@
         <item name="android:textColorHint">@color/soft_blue_dark</item>
     </style>
 
+    <style name="Widget.EventGo.EditText.Dynamic" parent="Widget.AppCompat.EditText">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:background">@drawable/rounded_edittext_background</item>
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="android:textColorHint">@color/soft_blue_accent</item>
+    </style>
+
     <style name="Widget.EventGo.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/button_background</item>
         <item name="android:textColor">@color/button_text</item>
@@ -31,6 +41,7 @@
         <item name="android:paddingBottom">14dp</item>
         <item name="android:elevation">4dp</item>
     </style>
+
 
     <style name="Widget.EventGo.Button.Small" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:paddingStart">12dp</item>

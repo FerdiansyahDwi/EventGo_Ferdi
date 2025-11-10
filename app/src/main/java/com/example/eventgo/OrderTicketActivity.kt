@@ -83,15 +83,18 @@ class OrderTicketActivity : AppCompatActivity() {
 
     private fun updateNameFields(quantity: Int) {
         val container = binding.nameFieldsContainer
-        val extraFieldsNeeded = if (quantity > 1) quantity - 1 else 0
 
-        // Batas 10 tiket
+        val extraFieldsNeeded = if (quantity > 1) quantity - 1 else 0
         val finalExtraFields = if (extraFieldsNeeded > 9) 9 else extraFieldsNeeded
+
         val currentExtraFields = container.childCount
-        if (finalExtraFields == currentExtraFields) return
+
+        if (finalExtraFields == currentExtraFields) return // Tidak ada perubahan
+
         if (finalExtraFields > currentExtraFields) {
             for (i in currentExtraFields until finalExtraFields) {
-                val newField = EditText(ContextThemeWrapper(this, R.style.Widget_EventGo_EditText))
+
+                val newField = EditText(this)
 
                 val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -99,6 +102,20 @@ class OrderTicketActivity : AppCompatActivity() {
                 )
                 layoutParams.topMargin = (16 * resources.displayMetrics.density).toInt() // 16dp
                 newField.layoutParams = layoutParams
+
+                newField.setBackgroundResource(R.drawable.rounded_edittext_background)
+                newField.setTextColor(getColor(R.color.text_dark)) // <-- Ini yang penting
+                newField.setHintTextColor(getColor(R.color.soft_blue_accent)) // <-- Ini yang penting
+
+                val paddingVertical = (12 * resources.displayMetrics.density).toInt()
+                val paddingHorizontal = (16 * resources.displayMetrics.density).toInt()
+                newField.setPadding(
+                    paddingHorizontal,
+                    paddingVertical,
+                    paddingHorizontal,
+                    paddingVertical
+                )
+
                 newField.hint = "Nama Pemesan Tiket ${i + 2}"
 
                 container.addView(newField)
